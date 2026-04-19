@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dart Language — Complete Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: #30363d;
+    --teal: #2dd4bf;
+    --teal2: #5eead4;
+    --orange: #fb923c;
+    --pink: #f472b6;
+    --blue: #60a5fa;
+    --green: #4ade80;
+    --yellow: #facc15;
+    --purple: #a78bfa;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --code-bg: #0d1117;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    line-height: 1.8;
+  }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(135deg, #0d1117 0%, #0f2027 50%, #0d1117 100%);
+    padding: 70px 40px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--teal), var(--blue), var(--purple), var(--pink));
+  }
+  .dart-logo {
+    font-size: 4rem;
+    margin-bottom: 16px;
+    display: block;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+  .hero h1 {
+    font-size: 2.8rem;
+    font-weight: 900;
+    background: linear-gradient(90deg, var(--teal), var(--blue), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+  }
+  .hero p { color: var(--text-muted); font-size: 1.05rem; }
+
+  /* NAV */
+  .nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    scrollbar-width: none;
+  }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 14px 18px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav a:hover { color: var(--teal); border-bottom-color: var(--teal); }
+
+  /* LAYOUT */
+  .container { max-width: 960px; margin: 0 auto; padding: 48px 24px; }
+
+  /* SECTION */
+  .section { margin-bottom: 64px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-badge {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .badge-teal { background: rgba(45,212,191,0.15); color: var(--teal); border: 1px solid rgba(45,212,191,0.3); }
+  .badge-orange { background: rgba(251,146,60,0.15); color: var(--orange); border: 1px solid rgba(251,146,60,0.3); }
+  .badge-pink { background: rgba(244,114,182,0.15); color: var(--pink); border: 1px solid rgba(244,114,182,0.3); }
+  .badge-blue { background: rgba(96,165,250,0.15); color: var(--blue); border: 1px solid rgba(96,165,250,0.3); }
+  .badge-purple { background: rgba(167,139,250,0.15); color: var(--purple); border: 1px solid rgba(167,139,250,0.3); }
+  .badge-green { background: rgba(74,222,128,0.15); color: var(--green); border: 1px solid rgba(74,222,128,0.3); }
+
+  .section-title { font-size: 1.7rem; font-weight: 700; }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 18px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .card:hover { border-color: var(--teal); transform: translateX(-2px); }
+  .card-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--teal);
+    margin-bottom: 12px;
+  }
+  .card p { color: var(--text-muted); margin-bottom: 14px; font-size: 0.95rem; }
+
+  /* CODE */
+  .code-block {
+    background: #010409;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.83rem;
+    line-height: 1.9;
+    overflow-x: auto;
+    margin: 14px 0;
+    direction: ltr;
+    text-align: left;
+    position: relative;
+  }
+  .code-block::before {
+    content: attr(data-lang);
+    position: absolute;
+    top: 6px; right: 10px;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-family: 'Tajawal', sans-serif;
+    background: var(--surface2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+
+  .kw { color: #ff7b72; }
+  .fn { color: #d2a8ff; }
+  .str { color: #a5d6ff; }
+  .cm { color: #8b949e; font-style: italic; }
+  .num { color: #79c0ff; }
+  .cls { color: #ffa657; }
+  .prop { color: #7ee787; }
+  .op { color: #ff7b72; }
+
+  /* TWO COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:600px){ .two-col { grid-template-columns: 1fr; } }
+
+  /* TABLE */
+  table { width: 100%; border-collapse: collapse; margin: 14px 0; font-size: 0.9rem; }
+  th { background: var(--surface2); color: var(--teal); padding: 10px 14px; text-align: right; border: 1px solid var(--border); }
+  td { padding: 10px 14px; border: 1px solid var(--border); color: var(--text-muted); }
+  tr:nth-child(even) td { background: rgba(255,255,255,0.02); }
+
+  /* CONCEPT PILL */
+  .pill {
+    display: inline-block;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin: 3px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* OOP DIAGRAM */
+  .oop-diagram {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    margin: 16px 0;
+  }
+  .class-box {
+    display: inline-block;
+    background: rgba(45,212,191,0.1);
+    border: 2px solid var(--teal);
+    border-radius: 10px;
+    padding: 12px 24px;
+    margin: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--teal);
+    font-weight: 500;
+  }
+  .class-box.child {
+    background: rgba(96,165,250,0.1);
+    border-color: var(--blue);
+    color: var(--blue);
+  }
+  .arrow {
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    display: block;
+    margin: 4px 0;
+  }
+
+  /* INFO */
+  .info-box {
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 14px 0;
+    display: flex;
+    gap: 12px;
+  }
+  .info-box.tip { background: rgba(74,222,128,0.08); border: 1px solid rgba(74,222,128,0.25); }
+  .info-box.warn { background: rgba(251,146,60,0.08); border: 1px solid rgba(251,146,60,0.25); }
+  .info-box p { color: var(--text-muted); font-size: 0.88rem; margin: 0; }
+
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 48px 0;
+  }
+
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 28px;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="dart-logo">🎯</span>
+  <h1>Dart Language — الدليل الشامل</h1>
+  <p>المفاهيم الأساسية + البرمجة الكائنية OOP بالعربي</p>
+</div>
+
+<nav class="nav">
+  <a href="#basics">📌 الأساسيات</a>
+  <a href="#types">🔢 أنواع البيانات</a>
+  <a href="#functions">⚙️ الدوال</a>
+  <a href="#collections">📦 المجموعات</a>
+  <a href="#async">⏳ Async/Await</a>
+  <a href="#oop">🏗️ OOP</a>
+  <a href="#classes">📐 الكلاسات</a>
+  <a href="#inheritance">🔗 الوراثة</a>
+  <a href="#advanced">🚀 متقدم</a>
+</nav>
+
+<div class="container">
+
+  <!-- ===== BASICS ===== -->
+  <div class="section" id="basics">
+    <div class="section-header">
+      <span class="section-badge badge-teal">01</span>
+      <div class="section-title">الأساسيات — Variables & Types</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📌 تعريف المتغيرات</div>
+      <div class="code-block" data-lang="DART">
+<span class="cm">// var — يستنتج النوع تلقائياً</span>
+<span class="kw">var</span> name = <span class="str">'أحمد'</span>;         <span class="cm">// String</span>
+<span class="kw">var</span> age = <span class="num">25</span>;              <span class="cm">// int</span>
+<span class="kw">var</span> price = <span class="num">9.99</span>;          <span class="cm">// double</span>
+
+<span class="cm">// تحديد النوع صراحةً</span>
+<span class="cls">String</span> city = <span class="str">'دمشق'</span>;
+<span class="kw">int</span> year = <span class="num">2024</span>;
+<span class="kw">double</span> weight = <span class="num">75.5</span>;
+<span class="kw">bool</span> isLoggedIn = <span class="kw">true</span>;
+
+<span class="cm">// final — قيمة مرة واحدة (runtime)</span>
+<span class="kw">final</span> token = <span class="str">'abc123'</span>;
+
+<span class="cm">// const — ثابت وقت الكومبايل</span>
+<span class="kw">const</span> pi = <span class="num">3.14159</span>;
+
+<span class="cm">// nullable — يقبل null</span>
+<span class="cls">String</span>? email;          <span class="cm">// ممكن يكون null</span>
+<span class="kw">int</span>? userId = <span class="kw">null</span>;
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title">🔢 أنواع البيانات</div>
+        <table>
+          <tr><th>النوع</th><th>مثال</th></tr>
+          <tr><td>int</td><td>42, -10</td></tr>
+          <tr><td>double</td><td>3.14, -0.5</td></tr>
+          <tr><td>String</td><td>'مرحبا'</td></tr>
+          <tr><td>bool</td><td>true, false</td></tr>
+          <tr><td>List</td><td>[1, 2, 3]</td></tr>
+          <tr><td>Map</td><td>{'key': 'val'}</td></tr>
+          <tr><td>dynamic</td><td>أي نوع</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title">❓ Null Safety</div>
+        <div class="code-block" data-lang="DART">
+<span class="cm">// ? = ممكن null</span>
+<span class="cls">String</span>? name = <span class="kw">null</span>;
+
+<span class="cm">// ! = أنا متأكد مش null</span>
+<span class="fn">print</span>(name!);
+
+<span class="cm">// ?? = قيمة افتراضية</span>
+<span class="kw">var</span> x = name ?? <span class="str">'ضيف'</span>;
+
+<span class="cm">// ?. = استدعاء آمن</span>
+<span class="kw">var</span> len = name?.length;
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔄 التحويل بين الأنواع</div>
+      <div class="code-block" data-lang="DART">
+<span class="cm">// String → int</span>
+<span class="kw">int</span> n = <span class="kw">int</span>.<span class="fn">parse</span>(<span class="str">'42'</span>);
+
+<span class="cm">// int → String</span>
+<span class="cls">String</span> s = <span class="num">42</span>.<span class="fn">toString</span>();
+
+<span class="cm">// String → double</span>
+<span class="kw">double</span> d = <span class="kw">double</span>.<span class="fn">parse</span>(<span class="str">'3.14'</span>);
+
+<span class="cm">// int → double</span>
+<span class="kw">double</span> x = <span class="num">5</span>.toDouble();
+
+<span class="cm">// تحقق من النوع</span>
+<span class="kw">if</span> (value <span class="kw">is</span> <span class="cls">String</span>) { <span class="fn">print</span>(<span class="str">'نص'</span>); }
+<span class="kw">if</span> (value <span class="kw">is</span>! <span class="kw">int</span>) { <span class="fn">print</span>(<span class="str">'مش رقم'</span>); }
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===== FUNCTIONS ===== -->
+  <div class="section" id="functions">
+    <div class="section-header">
+      <span class="section-badge badge-orange">02</span>
+      <div class="section-title">الدوال — Functions</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⚙️ أنواع الدوال</div>
+      <div class="code-block" data-lang="DART">
+<span class="cm">// دالة عادية</span>
+<span class="kw">int</span> <span class="fn">add</span>(<span class="kw">int</span> a, <span class="kw">int</span> b) {
+  <span class="kw">return</span> a + b;
+}
+
+<span class="cm">// Arrow function (سطر واحد)</span>
+<span class="kw">int</span> <span class="fn">multiply</span>(<span class="kw">int</span> a, <span class="kw">int</span> b) => a * b;
+
+<span class="cm">// دالة بـ parameters اختيارية</span>
+<span class="kw">void</span> <span class="fn">greet</span>(<span class="cls">String</span> name, {<span class="cls">String</span> title = <span class="str">'مرحباً'</span>}) {
+  <span class="fn">print</span>(<span class="str">'$title $name'</span>);
+}
+<span class="fn">greet</span>(<span class="str">'أحمد'</span>);                 <span class="cm">// مرحباً أحمد</span>
+<span class="fn">greet</span>(<span class="str">'سارة'</span>, title: <span class="str">'أهلاً'</span>); <span class="cm">// أهلاً سارة</span>
+
+<span class="cm">// دالة بدون return</span>
+<span class="kw">void</span> <span class="fn">printName</span>(<span class="cls">String</span> name) {
+  <span class="fn">print</span>(name);
+}
+
+<span class="cm">// Anonymous function (Lambda)</span>
+<span class="kw">var</span> square = (<span class="kw">int</span> x) => x * x;
+<span class="fn">print</span>(<span class="fn">square</span>(<span class="num">5</span>)); <span class="cm">// 25</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔁 الحلقات والشروط</div>
+      <div class="code-block" data-lang="DART">
+<span class="cm">// if / else</span>
+<span class="kw">if</span> (age >= <span class="num">18</span>) {
+  <span class="fn">print</span>(<span class="str">'بالغ'</span>);
+} <span class="kw">else if</span> (age >= <span class="num">13</span>) {
+  <span class="fn">print</span>(<span class="str">'مراهق'</span>);
+} <span class="kw">else</span> {
+  <span class="fn">print</span>(<span class="str">'طفل'</span>);
+}
+
+<span class="cm">// Ternary</span>
+<span class="kw">var</span> status = age >= <span class="num">18</span> ? <span class="str">'بالغ'</span> : <span class="str">'قاصر'</span>;
+
+<span class="cm">// for loop</span>
+<span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i < <span class="num">5</span>; i++) {
+  <span class="fn">print</span>(i);
+}
+
+<span class="cm">// for-in</span>
+<span class="kw">for</span> (<span class="kw">var</span> item <span class="kw">in</span> myList) {
+  <span class="fn">print</span>(item);
+}
+
+<span class="cm">// while</span>
+<span class="kw">while</span> (count > <span class="num">0</span>) {
+  count--;
+}
+
+<span class="cm">// switch</span>
+<span class="kw">switch</span> (day) {
+  <span class="kw">case</span> <span class="str">'الجمعة'</span>:
+    <span class="fn">print</span>(<span class="str">'عطلة'</span>);
+    <span class="kw">break</span>;
+  <span class="kw">default</span>:
+    <span class="fn">print</span>(<span class="str">'يوم عمل'</span>);
+}
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===== COLLECTIONS ===== -->
+  <div class="section" id="collections">
+    <div class="section-header">
+      <span class="section-badge badge-blue">03</span>
+      <div class="section-title">المجموعات — Collections</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 List</div>
+      <div class="code-block" data-lang="DART">
+<span class="cm">// إنشاء</span>
+<span class="cls">List</span>&lt;<span class="cls">String</span>&gt; names = [<span class="str">'أحمد'</span>, <span class="str">'سارة'</span>, <span class="str">'محمد'</span>];
+<span class="kw">var</span> nums = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>];
+
+<span class="cm">// إضافة</span>
+names.<span class="fn">add</span>(<span class="str">'علي'</span>);
+names.<span class="fn">addAll</span>([<span class="str">'فاطمة'</span>, <span class="str">'زيد'</span>]);
+
+<span class="cm">// الوصول</span>
+<span class="fn">print</span>(names[<span class="num">0</span>]);          <span class="cm">// أحمد</span>
+<span class="fn">print</span>(names.first);       <span class="cm">// أحمد</span>
+<span class="fn">print</span>(names.last);        <span class="cm">// زيد</span>
+<span class="fn">print</span>(names.length);      <span class="cm">// 5</span>
+
+<span class="cm">// حذف</span>
+names.<span class="fn">remove</span>(<span class="str">'علي'</span>);
+names.<span class="fn">removeAt</span>(<span class="num">0</span>);
+
+<span class="cm">// map — تحويل</span>
+<span class="kw">var</span> upper = names.<span class="fn">map</span>((n) => n.<span class="fn">toUpperCase</span>()).<span class="fn">toList</span>();
+
+<span class="cm">// where — فلترة</span>
+<span class="kw">var</span> filtered = nums.<span class="fn">where</span>((n) => n > <span class="num">2</span>).<span class="fn">toList</span>(); <span class="cm">// [3,4,5]</span>
+
+<span class="cm">// forEach</span>
+names.<span class="fn">forEach</span>((n) => <span class="fn">print</span>(n));
+
+<span class="cm">// contains</span>
+<span class="kw">bool</span> has = names.<span class="fn">contains</span>(<span class="str">'أحمد'</span>); <span class="cm">// true</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🗺️ Map</div>
+      <div class="code-block" data-lang="DART">
+<span class="cm">// إنشاء</span>
+<span class="cls">Map</span>&lt;<span class="cls">String</span>, <span class="kw">dynamic</span>&gt; user = {
+  <span class="str">'name'</span>: <span class="str">'أحمد'</span>,
+  <span class="str">'age'</span>: <span class="num">25</span>,
+  <span class="str">'city'</span>: <span class="str">'دمشق'</span>,
+};
+
+<span class="cm">// الوصول</span>
+<span class="fn">print</span>(user[<span class="str">'name'</span>]);        <span class="cm">// أحمد</span>
+<span class="fn">print</span>(user[<span class="str">'age'</span>]);         <span class="cm">// 25</span>
+
+<span class="cm">// إضافة / تعديل</span>
+user[<span class="str">'email'</span>] = <span class="str">'a@mail.com'</span>;
+user[<span class="str">'age'</span>] = <span class="num">26</span>;
+
+<span class="cm">// حذف</span>
+user.<span class="fn">remove</span>(<span class="str">'city'</span>);
+
+<span class="cm">// التحقق</span>
+user.<span class="fn">containsKey</span>(<span class="str">'name'</span>);   <span class="cm">// true</span>
+user.<span class="fn">containsValue</span>(<span class="str">'أحمد'</span>); <span class="cm">// true</span>
+
+<span class="cm">// المفاتيح والقيم</span>
+<span class="fn">print</span>(user.keys);    <span class="cm">// (name, age, email)</span>
+<span class="fn">print</span>(user.values);  <span class="cm">// (أحمد, 26, a@mail.com)</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===== ASYNC ===== -->
+  <div class="section" id="async">
+    <div class="section-header">
+      <span class="section-badge badge-pink">04</span>
+      <div class="section-title">البرمجة الغير متزامنة — Async/Await</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">⏳ Future — ما هو؟</div>
+      <p>الـ Future هو وعد بإرجاع قيمة في المستقبل — مثل طلب من السيرفر يلي بياخذ وقت.</p>
+      <div class="code-block" data-lang="DART">
+<span class="cm">// Future — يرجع قيمة بعد وقت</span>
+<span class="cls">Future</span>&lt;<span class="cls">String</span>&gt; <span class="fn">fetchName</span>() <span class="kw">async</span> {
+  <span class="kw">await</span> <span class="cls">Future</span>.<span class="fn">delayed</span>(<span class="cls">Duration</span>(seconds: <span class="num">2</span>));
+  <span class="kw">return</span> <span class="str">'أحمد'</span>;
+}
+
+<span class="cm">// استخدام async/await</span>
+<span class="kw">void</span> <span class="fn">main</span>() <span class="kw">async</span> {
+  <span class="fn">print</span>(<span class="str">'قبل'</span>);
+  <span class="cls">String</span> name = <span class="kw">await</span> <span class="fn">fetchName</span>(); <span class="cm">// انتظر النتيجة</span>
+  <span class="fn">print</span>(<span class="str">'الاسم: $name'</span>);
+  <span class="fn">print</span>(<span class="str">'بعد'</span>);
+}
+
+<span class="cm">// try/catch مع async</span>
+<span class="cls">Future</span>&lt;<span class="kw">void</span>&gt; <span class="fn">loadData</span>() <span class="kw">async</span> {
+  <span class="kw">try</span> {
+    <span class="kw">final</span> data = <span class="kw">await</span> <span class="fn">fetchFromApi</span>();
+    <span class="fn">print</span>(data);
+  } <span class="kw">catch</span> (e) {
+    <span class="fn">print</span>(<span class="str">'خطأ: $e'</span>);
+  } <span class="kw">finally</span> {
+    <span class="fn">print</span>(<span class="str">'انتهى'</span>); <span class="cm">// دايماً يشتغل</span>
+  }
+}
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===== OOP ===== -->
+  <div class="section" id="oop">
+    <div class="section-header">
+      <span class="section-badge badge-purple">05</span>
+      <div class="section-title">البرمجة الكائنية — OOP</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏗️ المفاهيم الأربعة الأساسية</div>
+      <div class="two-col">
+        <div style="background:rgba(45,212,191,0.08);border:1px solid rgba(45,212,191,0.2);border-radius:10px;padding:16px;">
+          <div style="color:var(--teal);font-weight:700;margin-bottom:8px">1. Encapsulation — التغليف</div>
+          <p style="color:var(--text-muted);font-size:0.88rem">إخفاء التفاصيل الداخلية وإظهار الواجهة فقط</p>
+        </div>
+        <div style="background:rgba(96,165,250,0.08);border:1px solid rgba(96,165,250,0.2);border-radius:10px;padding:16px;">
+          <div style="color:var(--blue);font-weight:700;margin-bottom:8px">2. Inheritance — الوراثة</div>
+          <p style="color:var(--text-muted);font-size:0.88rem">الكلاس الابن يرث خصائص ودوال الكلاس الأب</p>
+        </div>
+        <div style="background:rgba(244,114,182,0.08);border:1px solid rgba(244,114,182,0.2);border-radius:10px;padding:16px;">
+          <div style="color:var(--pink);font-weight:700;margin-bottom:8px">3. Polymorphism — تعدد الأشكال</div>
+          <p style="color:var(--text-muted);font-size:0.88rem">نفس الدالة تتصرف بشكل مختلف حسب الكلاس</p>
+        </div>
+        <div style="background:rgba(167,139,250,0.08);border:1px solid rgba(167,139,250,0.2);border-radius:10px;padding:16px;">
+          <div style="color:var(--purple);font-weight:700;margin-bottom:8px">4. Abstraction — التجريد</div>
+          <p style="color:var(--text-muted);font-size:0.88rem">إخفاء التعقيد وإظهار ما يهم المستخدم فقط</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===== CLASSES ===== -->
+  <div class="section" id="classes">
+    <div class="section-header">
+      <span class="section-badge badge-teal">06</span>
+      <div class="section-title">الكلاسات — Classes</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📐 تعريف كلاس كامل</div>
+      <div class="code-block" data-lang="DART">
+<span class="kw">class</span> <span class="cls">Person</span> {
+  <span class="cm">// ✅ Properties (الخصائص)</span>
+  <span class="cls">String</span> name;
+  <span class="kw">int</span> age;
+  <span class="cls">String</span>? email;  <span class="cm">// nullable</span>
+
+  <span class="cm">// ✅ Private property (بـ _)</span>
+  <span class="cls">String</span> _password = <span class="str">''</span>;
+
+  <span class="cm">// ✅ Constructor</span>
+  <span class="cls">Person</span>({<span class="kw">required this</span>.name, <span class="kw">required this</span>.age, <span class="kw">this</span>.email});
+
+  <span class="cm">// ✅ Named Constructor</span>
+  <span class="cls">Person</span>.<span class="fn">guest</span>() : name = <span class="str">'ضيف'</span>, age = <span class="num">0</span>;
+
+  <span class="cm">// ✅ Getter</span>
+  <span class="cls">String</span> <span class="kw">get</span> <span class="prop">info</span> => <span class="str">'$name ($age سنة)'</span>;
+
+  <span class="cm">// ✅ Setter</span>
+  <span class="kw">set</span> <span class="fn">password</span>(<span class="cls">String</span> val) {
+    <span class="kw">if</span> (val.length >= <span class="num">6</span>) _password = val;
+  }
+
+  <span class="cm">// ✅ Method</span>
+  <span class="kw">void</span> <span class="fn">greet</span>() {
+    <span class="fn">print</span>(<span class="str">'مرحباً، أنا $name'</span>);
+  }
+
+  <span class="cm">// ✅ toString override</span>
+  <span class="kw">@override</span>
+  <span class="cls">String</span> <span class="fn">toString</span>() => <span class="str">'Person(name: $name, age: $age)'</span>;
+}
+
+<span class="cm">// الاستخدام</span>
+<span class="kw">void</span> <span class="fn">main</span>() {
+  <span class="kw">var</span> person = <span class="cls">Person</span>(name: <span class="str">'أحمد'</span>, age: <span class="num">25</span>);
+  person.<span class="fn">greet</span>();             <span class="cm">// مرحباً، أنا أحمد</span>
+  <span class="fn">print</span>(person.info);        <span class="cm">// أحمد (25 سنة)</span>
+  person.password = <span class="str">'abc123'</span>; <span class="cm">// Setter</span>
+
+  <span class="kw">var</span> guest = <span class="cls">Person</span>.<span class="fn">guest</span>();  <span class="cm">// Named Constructor</span>
+}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔒 Static Members</div>
+      <div class="code-block" data-lang="DART">
+<span class="kw">class</span> <span class="cls">MathHelper</span> {
+  <span class="cm">// static = مشترك بين كل الـ instances</span>
+  <span class="kw">static const</span> pi = <span class="num">3.14159</span>;
+
+  <span class="kw">static</span> <span class="kw">double</span> <span class="fn">circleArea</span>(<span class="kw">double</span> r) => pi * r * r;
+}
+
+<span class="cm">// استخدام بدون إنشاء Object</span>
+<span class="fn">print</span>(<span class="cls">MathHelper</span>.pi);
+<span class="fn">print</span>(<span class="cls">MathHelper</span>.<span class="fn">circleArea</span>(<span class="num">5</span>));
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===== INHERITANCE ===== -->
+  <div class="section" id="inheritance">
+    <div class="section-header">
+      <span class="section-badge badge-orange">07</span>
+      <div class="section-title">الوراثة — Inheritance</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔗 extends — الوراثة</div>
+      <div class="oop-diagram">
+        <div class="class-box">Animal (الأب)</div>
+        <div class="arrow">↓ extends</div>
+        <div>
+          <div class="class-box child">Dog</div>
+          <div class="class-box child">Cat</div>
+          <div class="class-box child">Bird</div>
+        </div>
+      </div>
+      <div class="code-block" data-lang="DART">
+<span class="cm">// الكلاس الأب</span>
+<span class="kw">class</span> <span class="cls">Animal</span> {
+  <span class="cls">String</span> name;
+  <span class="cls">Animal</span>(<span class="kw">this</span>.name);
+
+  <span class="kw">void</span> <span class="fn">breathe</span>() => <span class="fn">print</span>(<span class="str">'$name يتنفس'</span>);
+  <span class="kw">void</span> <span class="fn">makeSound</span>() => <span class="fn">print</span>(<span class="str">'...'</span>);
+}
+
+<span class="cm">// الكلاس الابن — يرث كل شي من Animal</span>
+<span class="kw">class</span> <span class="cls">Dog</span> <span class="kw">extends</span> <span class="cls">Animal</span> {
+  <span class="cls">String</span> breed;
+
+  <span class="cm">// super — يستدعي constructor الأب</span>
+  <span class="cls">Dog</span>(<span class="cls">String</span> name, <span class="kw">this</span>.breed) : <span class="kw">super</span>(name);
+
+  <span class="cm">// Override — تجاوز دالة الأب</span>
+  <span class="kw">@override</span>
+  <span class="kw">void</span> <span class="fn">makeSound</span>() => <span class="fn">print</span>(<span class="str">'$name يقول: هاو هاو!'</span>);
+
+  <span class="cm">// دالة جديدة خاصة بالكلب</span>
+  <span class="kw">void</span> <span class="fn">fetch</span>() => <span class="fn">print</span>(<span class="str">'$name يجري خلف الكرة'</span>);
+}
+
+<span class="kw">class</span> <span class="cls">Cat</span> <span class="kw">extends</span> <span class="cls">Animal</span> {
+  <span class="cls">Cat</span>(<span class="cls">String</span> name) : <span class="kw">super</span>(name);
+
+  <span class="kw">@override</span>
+  <span class="kw">void</span> <span class="fn">makeSound</span>() => <span class="fn">print</span>(<span class="str">'$name يقول: مياو!'</span>);
+}
+
+<span class="cm">// الاستخدام</span>
+<span class="kw">void</span> <span class="fn">main</span>() {
+  <span class="kw">var</span> dog = <span class="cls">Dog</span>(<span class="str">'ريكس'</span>, <span class="str">'German Shepherd'</span>);
+  dog.<span class="fn">breathe</span>();    <span class="cm">// من الأب</span>
+  dog.<span class="fn">makeSound</span>(); <span class="cm">// Override</span>
+  dog.<span class="fn">fetch</span>();      <span class="cm">// خاص بالكلب</span>
+
+  <span class="kw">var</span> cat = <span class="cls">Cat</span>(<span class="str">'ميشا'</span>);
+  cat.<span class="fn">makeSound</span>();  <span class="cm">// مياو!</span>
+}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📋 Abstract Class</div>
+      <p>كلاس لا يمكن إنشاء object منه مباشرة — بس يعرّف الـ interface:</p>
+      <div class="code-block" data-lang="DART">
+<span class="kw">abstract class</span> <span class="cls">Shape</span> {
+  <span class="cm">// دالة مجردة — لازم كل ابن يطبّقها</span>
+  <span class="kw">double</span> <span class="fn">area</span>();
+  <span class="kw">double</span> <span class="fn">perimeter</span>();
+
+  <span class="cm">// دالة عادية — اختيارية للـ override</span>
+  <span class="kw">void</span> <span class="fn">describe</span>() => <span class="fn">print</span>(<span class="str">'مساحتي: ${<span class="fn">area</span>()}'</span>);
+}
+
+<span class="kw">class</span> <span class="cls">Circle</span> <span class="kw">extends</span> <span class="cls">Shape</span> {
+  <span class="kw">final</span> <span class="kw">double</span> radius;
+  <span class="cls">Circle</span>(<span class="kw">this</span>.radius);
+
+  <span class="kw">@override</span>
+  <span class="kw">double</span> <span class="fn">area</span>() => <span class="num">3.14</span> * radius * radius;
+
+  <span class="kw">@override</span>
+  <span class="kw">double</span> <span class="fn">perimeter</span>() => <span class="num">2</span> * <span class="num">3.14</span> * radius;
+}
+
+<span class="kw">class</span> <span class="cls">Rectangle</span> <span class="kw">extends</span> <span class="cls">Shape</span> {
+  <span class="kw">final</span> <span class="kw">double</span> width, height;
+  <span class="cls">Rectangle</span>(<span class="kw">this</span>.width, <span class="kw">this</span>.height);
+
+  <span class="kw">@override</span>
+  <span class="kw">double</span> <span class="fn">area</span>() => width * height;
+
+  <span class="kw">@override</span>
+  <span class="kw">double</span> <span class="fn">perimeter</span>() => <span class="num">2</span> * (width + height);
+}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔌 Interface — implements</div>
+      <div class="code-block" data-lang="DART">
+<span class="cm">// كل كلاس في Dart ممكن يشتغل كـ interface</span>
+<span class="kw">abstract class</span> <span class="cls">Printable</span> {
+  <span class="kw">void</span> <span class="fn">print</span>();
+}
+
+<span class="kw">abstract class</span> <span class="cls">Saveable</span> {
+  <span class="kw">void</span> <span class="fn">save</span>();
+}
+
+<span class="cm">// implements يرث الـ interface (لازم تطبق كل الدوال)</span>
+<span class="kw">class</span> <span class="cls">Document</span> <span class="kw">implements</span> <span class="cls">Printable</span>, <span class="cls">Saveable</span> {
+  <span class="kw">@override</span>
+  <span class="kw">void</span> <span class="fn">print</span>() => <span class="fn">print</span>(<span class="str">'طباعة المستند'</span>);
+
+  <span class="kw">@override</span>
+  <span class="kw">void</span> <span class="fn">save</span>() => <span class="fn">print</span>(<span class="str">'حفظ المستند'</span>);
+}
+
+<span class="cm">// الفرق بين extends و implements</span>
+<span class="cm">// extends   → ترث الكود + الـ interface</span>
+<span class="cm">// implements → ترث الـ interface فقط (لازم تعيد الكتابة)</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🧩 Mixin — إضافة وظائف بدون وراثة</div>
+      <div class="code-block" data-lang="DART">
+<span class="kw">mixin</span> <span class="cls">Swimming</span> {
+  <span class="kw">void</span> <span class="fn">swim</span>() => <span class="fn">print</span>(<span class="str">'يسبح'</span>);
+}
+
+<span class="kw">mixin</span> <span class="cls">Flying</span> {
+  <span class="kw">void</span> <span class="fn">fly</span>() => <span class="fn">print</span>(<span class="str">'يطير'</span>);
+}
+
+<span class="kw">class</span> <span class="cls">Duck</span> <span class="kw">extends</span> <span class="cls">Animal</span> <span class="kw">with</span> <span class="cls">Swimming</span>, <span class="cls">Flying</span> {
+  <span class="cls">Duck</span>() : <span class="kw">super</span>(<span class="str">'بطة'</span>);
+}
+
+<span class="kw">void</span> <span class="fn">main</span>() {
+  <span class="kw">var</span> duck = <span class="cls">Duck</span>();
+  duck.<span class="fn">swim</span>();  <span class="cm">// من Swimming</span>
+  duck.<span class="fn">fly</span>();   <span class="cm">// من Flying</span>
+}
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ===== ADVANCED ===== -->
+  <div class="section" id="advanced">
+    <div class="section-header">
+      <span class="section-badge badge-green">08</span>
+      <div class="section-title">مفاهيم متقدمة</div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔷 Generics — الأنواع العامة</div>
+      <div class="code-block" data-lang="DART">
+<span class="cm">// T = أي نوع</span>
+<span class="kw">class</span> <span class="cls">Box</span>&lt;<span class="cls">T</span>&gt; {
+  <span class="cls">T</span> value;
+  <span class="cls">Box</span>(<span class="kw">this</span>.value);
+  <span class="cls">T</span> <span class="fn">getValue</span>() => value;
+}
+
+<span class="kw">var</span> intBox = <span class="cls">Box</span>&lt;<span class="kw">int</span>&gt;(<span class="num">42</span>);
+<span class="kw">var</span> strBox = <span class="cls">Box</span>&lt;<span class="cls">String</span>&gt;(<span class="str">'مرحبا'</span>);
+
+<span class="cm">// دالة Generic</span>
+<span class="cls">T</span> <span class="fn">getFirst</span>&lt;<span class="cls">T</span>&gt;(<span class="cls">List</span>&lt;<span class="cls">T</span>&gt; list) => list.first;
+
+<span class="fn">print</span>(<span class="fn">getFirst</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]));      <span class="cm">// 1</span>
+<span class="fn">print</span>(<span class="fn">getFirst</span>([<span class="str">'a'</span>, <span class="str">'b'</span>]));   <span class="cm">// a</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🔑 Extension — إضافة دوال لكلاس موجود</div>
+      <div class="code-block" data-lang="DART">
+<span class="cm">// إضافة دوال لـ String</span>
+<span class="kw">extension</span> <span class="cls">StringExtension</span> <span class="kw">on</span> <span class="cls">String</span> {
+  <span class="kw">bool</span> <span class="fn">isValidEmail</span>() => <span class="kw">this</span>.<span class="fn">contains</span>(<span class="str">'@'</span>);
+  <span class="cls">String</span> <span class="fn">capitalize</span>() =>
+    <span class="kw">this</span>[<span class="num">0</span>].<span class="fn">toUpperCase</span>() + <span class="kw">this</span>.<span class="fn">substring</span>(<span class="num">1</span>);
+}
+
+<span class="cm">// الاستخدام</span>
+<span class="fn">print</span>(<span class="str">'test@mail.com'</span>.<span class="fn">isValidEmail</span>()); <span class="cm">// true</span>
+<span class="fn">print</span>(<span class="str">'hello'</span>.<span class="fn">capitalize</span>());           <span class="cm">// Hello</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📊 Enum</div>
+      <div class="code-block" data-lang="DART">
+<span class="kw">enum</span> <span class="cls">Status</span> {
+  loading,
+  success,
+  error,
+}
+
+<span class="kw">enum</span> <span class="cls">UserRole</span> {
+  admin,
+  user,
+  guest;
+
+  <span class="cm">// دوال داخل enum</span>
+  <span class="cls">String</span> <span class="fn">label</span>() {
+    <span class="kw">switch</span> (<span class="kw">this</span>) {
+      <span class="kw">case</span> <span class="cls">UserRole</span>.admin: <span class="kw">return</span> <span class="str">'مدير'</span>;
+      <span class="kw">case</span> <span class="cls">UserRole</span>.user: <span class="kw">return</span> <span class="str">'مستخدم'</span>;
+      <span class="kw">case</span> <span class="cls">UserRole</span>.guest: <span class="kw">return</span> <span class="str">'ضيف'</span>;
+    }
+  }
+}
+
+<span class="cm">// الاستخدام</span>
+<span class="kw">var</span> role = <span class="cls">UserRole</span>.admin;
+<span class="fn">print</span>(role.<span class="fn">label</span>()); <span class="cm">// مدير</span>
+
+<span class="kw">if</span> (status == <span class="cls">Status</span>.loading) {
+  <span class="fn">showSpinner</span>();
+}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">💡 String Interpolation والعمليات</div>
+      <div class="code-block" data-lang="DART">
+<span class="cls">String</span> name = <span class="str">'أحمد'</span>;
+<span class="kw">int</span> age = <span class="num">25</span>;
+
+<span class="cm">// String interpolation</span>
+<span class="fn">print</span>(<span class="str">'مرحباً $name'</span>);
+<span class="fn">print</span>(<span class="str">'عمره ${age + 1} سنة'</span>);
+
+<span class="cm">// العمليات الحسابية</span>
+<span class="fn">print</span>(<span class="num">10</span> + <span class="num">3</span>);   <span class="cm">// 13</span>
+<span class="fn">print</span>(<span class="num">10</span> - <span class="num">3</span>);   <span class="cm">// 7</span>
+<span class="fn">print</span>(<span class="num">10</span> * <span class="num">3</span>);   <span class="cm">// 30</span>
+<span class="fn">print</span>(<span class="num">10</span> / <span class="num">3</span>);   <span class="cm">// 3.333</span>
+<span class="fn">print</span>(<span class="num">10</span> ~/ <span class="num">3</span>);  <span class="cm">// 3 (قسمة صحيحة)</span>
+<span class="fn">print</span>(<span class="num">10</span> % <span class="num">3</span>);   <span class="cm">// 1 (الباقي)</span>
+
+<span class="cm">// Cascade operator</span>
+<span class="kw">var</span> list = []
+  ..<span class="fn">add</span>(<span class="num">1</span>)
+  ..<span class="fn">add</span>(<span class="num">2</span>)
+  ..<span class="fn">add</span>(<span class="num">3</span>);
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p>Dart Language — Complete Guide</p>
+  <p style="margin-top:8px;color:#4a5568">المفاهيم الأساسية + OOP بالعربي 🎯</p>
+</footer>
+
+</body>
+</html>
